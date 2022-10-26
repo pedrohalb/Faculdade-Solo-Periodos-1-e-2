@@ -1,0 +1,155 @@
+#include <fstream>
+#include <iostream>
+#include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
+
+using namespace std;
+
+struct lista_veiculos {
+  string modelo;
+  string marca;
+  string tipo;
+  int ano;
+  string km;
+  string potencia_do_motor;
+  string combustivel;
+  string cambio;
+  string direcao;
+  string cor;
+  string portas;
+  string placa;
+};
+lista_veiculos *p[50];
+
+int busca1 = 0;
+
+int busca_placa(lista_veiculos *p[], string placa, int *tam) {
+  int j = 0;
+  while (j < *tam) {
+    if (p[j]->placa == placa) {
+      busca1 = j + 1;
+      j = *tam;
+    } else {
+      j++;
+    }
+  }
+  return busca1;
+}
+
+/*int busca_ord_ano(lista_veiculos *p[], int ano, int tam) {
+  int aux = 0, i=1;
+  for (int i = 9; i > 1; i--) {
+    for (int j = 0; j < i - 1; j++) {
+      if (p[j]->ano > p[j + 1]->ano) {
+        aux = p[j];
+        p[j] = p[j + 1];
+        p[j + 1] = p[j];
+      }
+    }
+  }
+}*/
+
+int remove(lista_veiculos *p[], int *tam, string placa) {
+  int r, i = 0, indice;
+  indice = busca_placa(p, placa, tam);
+  if (indice != 0) {
+    cout << "carro encontrado, deseja removê-lo? (s-1/n-0) ";
+    cin >> r;
+    if (r == 0) {
+      return 0;
+    } else {
+      for (int j = busca1; j < *tam; j++) {
+        if (j < *tam) {
+          p[j] = p[j + 1];
+        } else {
+          p[j] = NULL;
+        }
+      }
+      *tam = *tam - 1;
+    }
+  }
+  return 1;
+}
+
+/*int insere(lista_veiculos *p[], int *tam, string modelo, string marca,
+           string tipo, string ano, string motor, string km,
+           string potencia_do_motor, string combustivel, string cambio,
+           string direcao, string cor, string portas, string placa) {
+  int novotam;
+  if (p[*tam] == NULL) {
+    p[*tam] = new lista_veiculos;
+    p[*tam]->modelo = modelo;
+    p[*tam]->marca = marca;
+    p[*tam]->tipo = tipo;
+    p[*tam]->ano = ano;
+    p[*tam]->potencia_do_motor = potencia_do_motor;
+    p[*tam]->km = km;
+    p[*tam]->potencia_do_motor = potencia_do_motor;
+    p[*tam]->combustivel = combustivel;
+    p[*tam]->cambio = cambio;
+    p[*tam]->direcao = direcao;
+    p[*tam]->cor = cor;
+    p[*tam]->portas = portas;
+    p[*tam]->placa = placa;
+    novotam = *tam + 1;
+  }
+  return 1;
+}*/
+
+int main() {
+  string placa;
+  int i = 0;
+  int tam = 0;
+  ifstream myfile("BD_veiculos.txt");
+  if (myfile.is_open()) {
+    while (!myfile.eof()) {
+      p[tam] = new lista_veiculos;
+      myfile >> p[tam]->modelo;
+      myfile >> p[tam]->marca;
+      myfile >> p[tam]->tipo;
+      myfile >> p[tam]->ano;
+      myfile >> p[tam]->km;
+      myfile >> p[tam]->potencia_do_motor;
+      myfile >> p[tam]->combustivel;
+      myfile >> p[tam]->cambio;
+      myfile >> p[tam]->direcao;
+      myfile >> p[tam]->cor;
+      myfile >> p[tam]->portas;
+      myfile >> p[tam]->placa;
+      tam++;
+    }
+
+    /*if (i < 49) {
+      for (int j = i; j < 50; j++) {
+        p[i] = NULL;
+      }
+    }
+    for (int q = 0; q < i; q++)
+      delete (p[i]);*/
+
+    cout << "digite a placa que deseja buscar: ";
+    cin >> placa;
+    remove(p, &tam, placa);
+
+    for (int k = 0; k < i; k++) {
+      cout << p[k]->modelo << " ";
+      cout << p[k]->marca << " ";
+      cout << p[k]->tipo << " ";
+      cout << p[k]->ano << " ";
+      cout << p[k]->km << " ";
+      cout << p[k]->potencia_do_motor << " ";
+      cout << p[k]->combustivel << " ";
+      cout << p[k]->cambio << " ";
+      cout << p[k]->direcao << " ";
+      cout << p[k]->cor << " ";
+      cout << p[k]->portas << " ";
+      cout << p[k]->placa << endl;
+    }
+
+    myfile.close();
+
+  } else
+    cout << "unable to open file";
+}
